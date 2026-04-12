@@ -40,7 +40,7 @@ Clone do repositório:
 
 ```bash
 cd /opt
-git clone https://github.com/adilsonNIC/enfrentando-o-temporal.git
+git clone https://github.com/AdilsonTorres/enfrentando-o-temporal.git
 cd enfrentando-o-temporal
 ```
 
@@ -89,7 +89,7 @@ export PATH=$PATH:$HOME/.local/bin
 
 A imagem cEOS **não está disponível publicamente** — precisa ser baixada da Arista e importada no Docker manualmente.
 
-📂 **Download:** [Google Drive — Imagens de Laboratório](https://drive.google.com/drive/folders/1uLDcgJuoxOE7c4ZD3WsPwLmvPrJKqeLE)
+📂 **Download:** [Google Drive — Imagens de Laboratório](https://drive.google.com/drive/folders/1szerfP3mkF05ck8MoMlQd7qMkLT0modg)
 
 Arquivo necessário: `cEOS-lab-4.34.2F.tar.xz`
 
@@ -432,7 +432,7 @@ Observe no Temporal UI: duas activities disparadas no mesmo instante, vendors di
 
 ## 📚 Referências
 
-- [Slides da apresentação no Drive](https://drive.google.com/drive/folders/1uLDcgJuoxOE7c4ZD3WsPwLmvPrJKqeLE)
+- [Slides da apresentação no Drive](https://drive.google.com/drive/folders/1szerfP3mkF05ck8MoMlQd7qMkLT0modg)
 - [Projeto anterior: event-driven-automation](https://github.com/wsdoprado/event-driven-automation) — referência de integração com NetBox + FastAPI
 - [O que é Temporal](https://docs.temporal.io/temporal)
 - [Temporal Python SDK samples](https://github.com/temporalio/samples-python)
