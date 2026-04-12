@@ -1,0 +1,24 @@
+[project]
+name = "enfrentando-o-temporal"
+version = "0.1.0"
+description = "Semana de Capacitação NIC.br - Temporal em Automação de Redes"
+authors = [
+    { name = "Adilson Torres", email = "adilson@nic.br" }
+]
+readme = "README.md"
+requires-python = ">=3.12"
+
+dependencies = [
+    "temporalio>=1.16.0",
+    "nornir>=3.5.0",                    # framework de automação de redes
+    "nornir-scrapli>=2023.7.30",        # plugin Scrapli para Arista cEOS (SSH)
+    "scrapli-community>=2024.1.30",     # plataforma arista_eos para Scrapli
+    "nornir-srl>=0.4.0",                # plugin Nokia SR Linux (JSON-RPC)
+    "requests>=2.32.5",
+    "python-dotenv>=1.1.1",
+]
+
+# Instala apenas o pacote 'shared' (drivers de dispositivos e helpers).
+# Os exercícios são scripts standalone, não pacotes instaláveis.
+[tool.setuptools]
+packages = ["shared"]

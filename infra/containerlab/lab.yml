@@ -1,0 +1,32 @@
+name: enfrentando-o-temporal
+
+mgmt:
+  network: mgmt
+  ipv4-subnet: 192.168.100.0/24
+  ipv6-subnet: 2001:db8:100::/64
+
+topology:
+  kinds:
+    ceos:
+      image: ceos:4.34.2F
+    srl:
+      image: ghcr.io/nokia/srlinux:latest
+
+  nodes:
+    # ── Arista cEOS ────────────────────────────────────────────────────────────
+    router-01:
+      kind: ceos
+      mgmt-ipv4: 192.168.100.101
+      mgmt-ipv6: 2001:db8:100::101
+
+    # ── Nokia SR Linux ─────────────────────────────────────────────────────────
+    # Credenciais padrão: admin / NokiaSrl1!
+    # Protocolo de gestão: gNMI (porta 57400)
+    srl-01:
+      kind: srl
+      mgmt-ipv4: 192.168.100.103
+      mgmt-ipv6: 2001:db8:100::103
+
+  links:
+    # Link de dados entre os dois devices (usado nos exercícios de interface)
+    - endpoints: ["router-01:eth1", "srl-01:e1-1"]

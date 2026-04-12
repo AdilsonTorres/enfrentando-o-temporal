@@ -1,0 +1,37 @@
+# Python
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Environment (credenciais — nunca commitar)
+.env
+
+# Logs
+*.log
+logs/
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# uv
+uv.lock
+
+# Containerlab runtime state (gerado por clab deploy — não versionar)
+infra/containerlab/clab-enfrentando-o-temporal/
+
+# Scripts do apresentador (ficam em enfrentando-o-temporal-tests/scripts/)
+scripts/populate_temporal_demo.py
+scripts/generate_screenshots.sh
