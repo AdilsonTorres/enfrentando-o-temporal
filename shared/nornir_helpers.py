@@ -31,7 +31,12 @@ def make_eos(device_ip: str) -> Nornir:
         platform="arista_eos",
         connection_options={
             "scrapli": ConnectionOptions(
-                extras={"auth_strict_key": False},
+                extras={
+                    "auth_strict_key": False,
+                    "timeout_socket": 10,     # TCP connect timeout (seconds)
+                    "timeout_transport": 15,  # SSH transport/auth timeout (seconds)
+                    "timeout_ops": 15,        # SSH command send/receive timeout (seconds)
+                },
             )
         },
     )})
@@ -49,7 +54,7 @@ def make_srl(device_ip: str) -> Nornir:
         username=USER_DEVICE,
         password=PASSW_DEVICE_NOKIA,
         platform="srlinux",
-        connection_options={"srlinux": ConnectionOptions(port=57400, extras={})},
+        connection_options={"srlinux": ConnectionOptions(port=57400, extras={"timeout": 10})},
     )})
     return Nornir(
         inventory=Inventory(hosts=hosts, groups=Groups(), defaults=Defaults()),

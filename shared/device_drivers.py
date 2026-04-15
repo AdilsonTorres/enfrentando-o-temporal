@@ -60,7 +60,7 @@ class EOSDevice:
         """Aplica um novo hostname. Levanta exceção em caso de falha de conexão."""
         def _task(task):
             task.run(task=send_configs, configs=[f"hostname {name}"])
-        await _run(self._nr, _task)
+        await _run_nornir(self._nr, _task)
 
     async def get_device_info(self) -> dict:
         """Retorna hostname, os_version, uptime (segundos) e lista de interfaces."""
@@ -87,7 +87,7 @@ class EOSDevice:
         """Aplica um novo description em uma interface."""
         def _task(task):
             task.run(task=send_configs, configs=[f"interface {interface}", f"description {description}"])
-        await _run(self._nr, _task)
+        await _run_nornir(self._nr, _task)
 
     async def get_interface_state(self, interface: str) -> str:
         """Retorna 'up' ou 'down' com base no admin-state da interface."""
@@ -102,7 +102,7 @@ class EOSDevice:
         def _task(task):
             cmd = "shutdown" if state == "down" else "no shutdown"
             task.run(task=send_configs, configs=[f"interface {interface}", cmd])
-        await _run(self._nr, _task)
+        await _run_nornir(self._nr, _task)
 
     async def check_route(self, prefix: str) -> bool:
         """Retorna True se o prefixo existe na tabela de roteamento."""
@@ -116,7 +116,7 @@ class EOSDevice:
         """Aplica um banner MOTD no device."""
         def _task(task):
             task.run(task=send_configs, configs=["banner motd", text, "EOF"])
-        await _run(self._nr, _task)
+        await _run_nornir(self._nr, _task)
 
 
 # ── Nokia SR Linux (nornir-srl / gNMI) ────────────────────────────────────────
@@ -144,7 +144,7 @@ class SRLDevice:
                 op="update",
                 dry_run=False,
             )
-        await _run(self._nr, _task)
+        await _run_nornir(self._nr, _task)
 
     async def get_device_info(self) -> dict:
         """Retorna hostname, os_version, uptime (segundos) e lista de interfaces."""
@@ -182,7 +182,7 @@ class SRLDevice:
                 op="update",
                 dry_run=False,
             )
-        await _run(self._nr, _task)
+        await _run_nornir(self._nr, _task)
 
     async def get_interface_state(self, interface: str) -> str:
         """Retorna 'up' ou 'down' com base no admin-state da interface."""
@@ -202,7 +202,7 @@ class SRLDevice:
                 op="update",
                 dry_run=False,
             )
-        await _run(self._nr, _task)
+        await _run_nornir(self._nr, _task)
 
     async def check_route(self, prefix: str) -> bool:
         """Retorna True se o prefixo existe na tabela de roteamento."""
@@ -226,7 +226,7 @@ class SRLDevice:
                 op="update",
                 dry_run=False,
             )
-        await _run(self._nr, _task)
+        await _run_nornir(self._nr, _task)
 
 
 # ── Factory ────────────────────────────────────────────────────────────────────

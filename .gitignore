@@ -34,4 +34,3 @@ infra/containerlab/clab-enfrentando-o-temporal/
 
 # Scripts do apresentador (ficam em enfrentando-o-temporal-tests/scripts/)
 scripts/populate_temporal_demo.py
-scripts/generate_screenshots.sh

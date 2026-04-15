@@ -250,7 +250,7 @@ section "Bônus — Execução Paralela"
 
 start_worker "bonus/paralelo"
 cd "$PROJECT_DIR/bonus/paralelo"
-log "Aplicando banner em paralelo em router-01 e router-02..."
+log "Aplicando banner em paralelo em router-01 e srl-01..."
 python run.py
 stop_worker
 log "Bônus paralelo concluído."
@@ -280,4 +280,4 @@ log "Workflows disponíveis no Temporal UI:"
 log "  http://localhost:8080/namespaces/default/workflows"
 log ""
 log "Próximo passo:"
-log "  bash scripts/generate_screenshots.sh"
+log "  bash scripts/check_lab.sh   # verifica o estado final do lab"

@@ -5,10 +5,8 @@ Execute uma vez após `clab deploy` para que os exercícios trabalhem com dados
 concretos: IPs de interface, prefixos de loopback, eBGP, NTP e descrições.
 
 Endereçamento:
-  router-01  Ethernet1  10.0.12.1/30   Loopback0  192.0.2.1/32  AS 65001
-  router-02  Ethernet1  10.0.12.2/30   Loopback0  192.0.2.2/32  AS 65002
+  router-01  Ethernet1  10.0.12.1/30   Loopback0  192.0.2.1/32
   srl-01     ethernet-1/1  10.0.34.1/30  system0  192.0.2.3/32
-  srl-02     ethernet-1/1  10.0.34.2/30  system0  192.0.2.4/32
 
 Uso:
   cd /home/adilson/semanacap/enfrentando-o-temporal
@@ -39,44 +37,19 @@ DEVICES = {
         "type": "eos",
         "hostname": "router-01",
         "data_iface": "Ethernet1",
-        "data_desc": "to-router-02",
+        "data_desc": "lab-link",
         "data_ip": "10.0.12.1/30",
         "loopback": "Loopback0",
         "loopback_ip": "192.0.2.1/32",
-        "bgp_as": 65001,
-        "bgp_peer_ip": "10.0.12.2",
-        "bgp_peer_as": 65002,
-    },
-    "router-02": {
-        "ip": os.getenv("DEVICE_02", "192.168.100.102"),
-        "type": "eos",
-        "hostname": "router-02",
-        "data_iface": "Ethernet1",
-        "data_desc": "to-router-01",
-        "data_ip": "10.0.12.2/30",
-        "loopback": "Loopback0",
-        "loopback_ip": "192.0.2.2/32",
-        "bgp_as": 65002,
-        "bgp_peer_ip": "10.0.12.1",
-        "bgp_peer_as": 65001,
     },
     "srl-01": {
         "ip": os.getenv("DEVICE_03", "192.168.100.103"),
         "type": "srl",
         "hostname": "srl-01",
         "data_iface": "ethernet-1/1",
-        "data_desc": "to-srl-02",
+        "data_desc": "lab-link",
         "data_ip": "10.0.34.1/30",
         "loopback_ip": "192.0.2.3/32",
-    },
-    "srl-02": {
-        "ip": os.getenv("DEVICE_04", "192.168.100.104"),
-        "type": "srl",
-        "hostname": "srl-02",
-        "data_iface": "ethernet-1/1",
-        "data_desc": "to-srl-01",
-        "data_ip": "10.0.34.2/30",
-        "loopback_ip": "192.0.2.4/32",
     },
 }
 
@@ -100,16 +73,6 @@ def _eos_populate(task: Task, cfg: dict) -> Result:
         "exit",
         # NTP (servidor fictício para fins de lab)
         "ntp server 10.0.0.1",
-        # eBGP entre router-01 e router-02
-        f"router bgp {cfg['bgp_as']}",
-        f"  router-id {cfg['loopback_ip'].split('/')[0]}",
-        f"  neighbor {cfg['bgp_peer_ip']} remote-as {cfg['bgp_peer_as']}",
-        f"  neighbor {cfg['bgp_peer_ip']} description {cfg['data_desc']}",
-        "  address-family ipv4",
-        f"    neighbor {cfg['bgp_peer_ip']} activate",
-        f"    network {cfg['loopback_ip']}",
-        "  exit",
-        "exit",
     ]
     task.run(task=send_configs, configs=configs)
     return Result(host=task.host, result={"status": True, "device": cfg["hostname"]}, changed=True)
@@ -178,10 +141,11 @@ def _srl_populate(task: Task, cfg: dict) -> Result:
     )
 
     # NTP (servidor fictício para fins de lab)
+    # SRL exige network-instance em cada server entry; usa 'mgmt' (interface de gerência).
     device.set_config(
         input=[{"/system/ntp": {
             "admin-state": "enable",
-            "server": [{"address": "10.0.0.1", "admin-state": "enable"}],
+            "server": [{"address": "10.0.0.1", "network-instance": "mgmt"}],
         }}],
         op="update",
         dry_run=False,
@@ -203,11 +167,12 @@ async def populate(name: str, cfg: dict):
             nr = make_srl(cfg["ip"])
             res = await asyncio.to_thread(nr.run, task=_srl_populate, cfg=cfg)
 
-        result = res["device"].result
-        if result.get("status"):
+        multi_result = res["device"]
+        if not multi_result.failed:
             print(f"[{name}] ✓ Configuração aplicada")
         else:
-            print(f"[{name}] ✗ Falha: {result}")
+            failed = next((r for r in multi_result if r.failed), multi_result[0])
+            print(f"[{name}] ✗ Falha: {failed.exception or failed.result}")
     except Exception as e:
         print(f"[{name}] ✗ Erro: {e}")
         raise
@@ -220,17 +185,13 @@ async def main():
 
     await asyncio.gather(
         populate("router-01", DEVICES["router-01"]),
-        populate("router-02", DEVICES["router-02"]),
         populate("srl-01",    DEVICES["srl-01"]),
-        populate("srl-02",    DEVICES["srl-02"]),
     )
 
     print()
     print("Resumo da topologia após populate:")
-    print("  router-01  Ethernet1  10.0.12.1/30  Lo0  192.0.2.1/32  eBGP→router-02")
-    print("  router-02  Ethernet1  10.0.12.2/30  Lo0  192.0.2.2/32  eBGP→router-01")
+    print("  router-01  Ethernet1  10.0.12.1/30  Lo0  192.0.2.1/32")
     print("  srl-01     eth-1/1    10.0.34.1/30  sys  192.0.2.3/32")
-    print("  srl-02     eth-1/1    10.0.34.2/30  sys  192.0.2.4/32")
 
 
 if __name__ == "__main__":

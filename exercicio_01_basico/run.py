@@ -4,7 +4,6 @@ Exercício 1 — Workflow Básico
 Uso:
   python run.py                  # Arista router-01 (padrão)
   python run.py --nokia          # Nokia srl-01
-  python run.py --device 192.168.100.102 --device-type eos
 """
 
 import asyncio

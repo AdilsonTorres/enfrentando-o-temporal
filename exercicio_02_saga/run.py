@@ -10,7 +10,6 @@ Execute:
   python run.py --force-fail             # Arista router-01, força rollback
   python run.py --nokia                  # Nokia srl-01, mudança com sucesso
   python run.py --nokia --force-fail     # Nokia srl-01, força rollback
-  python run.py --device 192.168.100.102 --device-type eos
 """
 
 import asyncio
