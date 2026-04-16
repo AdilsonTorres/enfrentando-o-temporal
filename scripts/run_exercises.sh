@@ -164,8 +164,8 @@ start_worker "exercicio_04_schedules"
 cd "$PROJECT_DIR/exercicio_04_schedules"
 
 # Remove schedules anteriores se existirem
-python run.py --delete compliance-router-01 2>/dev/null || true
-python run.py --delete compliance-srl-01 2>/dev/null || true
+python run.py --delete-all 2>/dev/null || true
+python run.py --delete-all --nokia 2>/dev/null || true
 
 log "Criando schedule para Arista..."
 python run.py --create
@@ -174,9 +174,9 @@ log "Criando schedule para Nokia..."
 python run.py --create --nokia
 
 log "Forçando execução imediata dos schedules..."
-python run.py --trigger compliance-router-01
+python run.py --trigger compliance-router-01-hostname
 sleep 5
-python run.py --trigger compliance-srl-01
+python run.py --trigger compliance-srl-01-hostname
 sleep 5
 
 log "Listando schedules ativos:"
